@@ -3,6 +3,7 @@ import loginSignupImage from "../assets/uploadImage.jfif";
 import { BiShow, BiHide } from "react-icons/bi";
 import { Link,useNavigate } from "react-router-dom";
 import { ImagetoBase64 } from "../utility/imagetoBase64";
+import { toast } from "react-hot-toast";
 
 function Signup () {
   const navigate = useNavigate()
@@ -62,11 +63,14 @@ function Signup () {
 
             const dataRes = await fetchData.json()
             console.log(dataRes)
-            alert("successfull")
-            // navigate("/login")
+            // alert(dataRes.message)
+            toast(dataRes.message)
+            if(dataRes.alert){
+              navigate("/login")
+            }
         }
         else {
-            alert("check password and confirm password again")
+            alert("Passwords do not match")
         }
     }
     else {
