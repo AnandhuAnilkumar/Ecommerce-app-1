@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import { toast } from 'react-hot-toast'
 import { BsCloudUpload } from "react-icons/bs";
 import { ImagetoBase64 } from '../utility/imagetoBase64';
 
@@ -35,24 +36,59 @@ const Newproduct = () => {
     })
   }
 
-  const handleSubmit = (e)=>{
+  const handleSubmit = async(e)=>{
     e.preventDefault()
     console.log(data)
+
+    const {name,image,category,price} = data
+    
+    if(name && image && category && price){
+
+      const fetchdata = await fetch(`${process.env.REACT_APP_SERVER_DOMAIN}/uploadProduct`,{
+        method : "POST",
+        headers: {
+          "content-type" : "application/json"
+        },
+        body : JSON.stringify(data)
+      })
+  
+      const fetchRes = await fetchdata.json()
+  
+      console.log(fetchRes)
+      toast(fetchRes.message)
+
+      setData(()=>{
+        return{
+          name : "",
+          category : "",
+          image : "",
+          price : "",
+          description : ""
+        }
+      })
+
+    }
+    else{
+      toast("Fields cannot be empty") 
+
+    }
+
+
   }
 
   return (
     <div className='p-4'>
       <form className='m-auto w-full max-w-md  shadow flex flex-col p-3 bg-white' onSubmit={handleSubmit}>
         <label htmlFor = 'name'>Name</label>
-        <input type={'text'} name = "name" className='bg-slate-200 p-1 my-1' onChange = {handleOnChange}/>
+        <input type={'text'} name = "name" className='bg-slate-200 p-1 my-1' onChange = {handleOnChange} value={data.name}/>
 
         <label htmlFor='category'>Category</label>
-        <select className='bg-slate-200 p-1 my-1' id='category' name='category' onChange = {handleOnChange}>
-          <option>--Select a category--</option>
-          <option>Fruits</option>
-          <option>Vegetable</option>
-          <option>Grains</option>
-          <option>Dairy products</option>
+        <select className='bg-slate-200 p-1 my-1' id='category' name='category' onChange = {handleOnChange} value={data.category}>
+          <option value={"other"}>--Select a category--</option>
+          <option value={"fruits"}>Fruits</option>
+          <option value={"vegetable"}>Vegetable</option>
+          <option value={"grains"}>Grains</option>
+          <option value={"dairy products"}>Dairy products</option>
         </select>
 
         <label htmlFor='image'>Upload Image
@@ -65,11 +101,11 @@ const Newproduct = () => {
         </label>
         
 
-        <label htmlFor='price' className='my-1'>Price</label>
-        <input type={"text"} className='bg-slate-200 p-1 my-1' name='price' onChange = {handleOnChange}/>
+        <label htmlFor='price' className='my-1'>Price per kg</label>
+        <input type={"text"} className='bg-slate-200 p-1 my-1' name='price' onChange = {handleOnChange} value={data.price}/>
 
         <label htmlFor='description'>Description</label>
-        <textarea rows ={2} className='bg-slate-200 p-1 my-1 resize-none' name='description' onChange = {handleOnChange}></textarea>
+        <textarea rows ={2} className='bg-slate-200 p-1 my-1 resize-none' name='description' onChange = {handleOnChange} value={data.description}></textarea>
       
         <button className='bg-green-400 hover:bg-green-500 text-white text-lg font-medium my-2 drop-shadow'>Save</button>
       </form>
