@@ -21,6 +21,7 @@ const Header = () => {
       dispatch(logoutRedux())
       toast("Logout successful")
   }
+
   return (
     <header className="fixed shadow-md w-full h-16 px-2 md:px-4 z-50 bg-white">
       {/* md = desktop version */}
@@ -52,9 +53,13 @@ const Header = () => {
             </div>
             {showMenu && (
               <div className="absolute right-2 bg-white py-2  shadow drop-shadow-md flex flex-col ">
-                <Link to={"newproduct"} className="whitespace-nowrap cursor-pointer px-2">New product</Link>
+               
                 {
-                  userData.image ? <p className="cursor-pointer text-white px-2 bg-red-600" onClick = {handleLogout}>Logout</p> :  <Link to={"login"} className="whitespace-nowrap cursor-pointer px-2">Login</Link>
+                  userData.email === process.env.REACT_APP_ADMIN_EMAIL && <Link to={"newproduct"} className="whitespace-nowrap cursor-pointer px-2">New product</Link>
+                }
+                
+                {
+                  userData.image ? <p className="cursor-pointer  px-2 hover:bg-red-600 hover:text-white" onClick = {handleLogout}>Logout ({userData.firstName})</p> :  <Link to={"login"} className="whitespace-nowrap cursor-pointer px-2">Login</Link>
                 }
                
               </div>
